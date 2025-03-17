@@ -1,7 +1,7 @@
 USER_ROLES_ENUMS = {
-    ADMIN: 'ADMIN',
-    CUSTOMER: 'CUSTOMER',
-    FLIGHT_COMPANY: 'FLIGHT_COMPANY'
+    ADMIN: 'admin',
+    CUSTOMER: 'customer',
+    FLIGHT_COMPANY: 'flight_company'
 }
 
 module.exports = {

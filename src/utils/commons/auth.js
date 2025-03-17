@@ -29,8 +29,14 @@ const verifyToken = async (data) => {
     }
 }
 
+const hashPassword = async (password) => {
+    const saltrounds = 10;
+    return await bcrypt.hash(password, saltrounds); 
+}
+
 module.exports = {
     checkPassword,
     createToken,
-    verifyToken
+    verifyToken,
+    hashPassword
 }

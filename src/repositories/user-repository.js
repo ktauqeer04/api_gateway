@@ -1,5 +1,5 @@
 const crudRespository = require("./crud-repository");
-const { User } = require('../models');
+const { User, Role } = require('../models');
 
 
 class UserRepository extends crudRespository{
@@ -8,11 +8,17 @@ class UserRepository extends crudRespository{
     }
 
     async getByEmails(email){
-        const response = await User.findAll({
+        const response = await User.findOne({
             where: {
                 email: email
-            }
-        })
+            },
+            include: {
+                model: Role,
+                as: "role",
+                attributes: ["name"] 
+            }        
+        });
+        return response
     }
 
 }

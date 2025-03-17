@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const RoleRepository = require("../repositories/role-repository");
-const UserRepository = require("../repositories/user-repository")
 const { Auth, Enums } = require("../utils/commons");
 const AppError = require("../utils/errors/app-error");
-const { checkPassword } = require("../utils/commons/auth");
+const { checkPassword, hashPassword } = require("../utils/commons/auth");
+const { UserRepository, RoleRepository } = require('../repositories');
 
 
 const userRepository = new UserRepository();
@@ -43,15 +42,29 @@ const signUp = async (data) => {
     
     try {
         
+        const findUser = await userRepository.getByEmails(data.email)
+
+        if(findUser){
+            console.log(findUser);
+            throw new AppError("Email Already Exists, please login", StatusCodes.FORBIDDEN)
+        }
+
+        const hashedPass = await hashPassword(data.password);
+
+        data.password = hashedPass;
+        console.log(data)
         const user = await userRepository.create(data);
+
         const role = await roleRepository.getRoleByName(Enums.USER_ROLES_ENUMS.CUSTOMER);
+        console.log(role);
+        
         user.addRole(role);
         
         return user;
 
     } catch (error) {
 
-        console.log(error.name);
+        console.log(error);
         if(error.name == 'SequelizeValidationError' || error.name == 'SequelizeUniqueConstraintError') {
             let explanation = [];
             error.errors.forEach((err) => {
